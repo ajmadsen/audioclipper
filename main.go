@@ -144,7 +144,7 @@ func converter(cmds <-chan *command) {
 	}
 }
 
-func unlinkIfExist(dir string) {
+func unlinkIfExists(dir string) {
 	removed := false
 	for {
 		_, err := os.Stat(dir)
@@ -170,7 +170,7 @@ func main() {
 		fmt.Printf("usage: %v clipfile.txt input.wav\n", os.Args[0])
 		os.Exit(1)
 	}
-	unlinkIfExist("clips")
+	unlinkIfExists("clips")
 	err := os.Mkdir("clips", 0755|os.ModeDir)
 	if err != nil {
 		log.Fatalln(err)
