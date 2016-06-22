@@ -35,16 +35,30 @@ var (
 )
 
 func parseTimestamp(s string) float64 {
+	s = regexp.MustCompile(`\s`).ReplaceAllString(s, "")
+	if s == "" {
+		return 0
+	}
 	fields := strings.SplitN(s, ":", 2)
-	h, err := strconv.ParseFloat(fields[0], 32)
+	if len(fields) > 2 {
+		log.Fatalf("error parsing timestamp %s", s)
+	}
+	if len(fields) == 1 {
+		ss, err := strconv.ParseFloat(s, 64)
+		if err != nil {
+			return 0
+		}
+		return ss
+	}
+	mm, err := strconv.ParseFloat(fields[0], 64)
 	if err != nil {
 		return 0
 	}
-	ss, err := strconv.ParseFloat(fields[1], 32)
+	ss, err := strconv.ParseFloat(fields[1], 64)
 	if err != nil {
 		return 0
 	}
-	return h*60 + ss
+	return mm*60 + ss
 }
 
 func parseClip(line string) *clip {
