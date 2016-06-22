@@ -78,6 +78,7 @@ func parseClip(line string) *clip {
 }
 
 func parseClipFile(fname string) []*clip {
+	rgx := regexp.MustCompile(`^\s*$`)
 	f, err := os.Open(fname)
 	if err != nil {
 		log.Fatalln("could not open clip file")
@@ -86,20 +87,26 @@ func parseClipFile(fname string) []*clip {
 	// skip first line
 	buffered.ReadLine()
 	var clips []*clip
+	count := 1
 	for {
 		l, _, err := buffered.ReadLine()
-		if err == io.EOF && len(l) == 0 {
+		if err == io.EOF {
 			break
 		}
 		if err != nil {
-			log.Fatalf("could not read line: %v", err)
+			log.Fatalf("could not read line #%d: %v", count, err)
 		}
-		str := string(l)
+		str := rgx.ReplaceAllString(string(l), "")
+		if str == "" {
+			count++
+			continue
+		}
 		clip := parseClip(str)
 		if clip == nil {
-			log.Fatalf("could not parse line: %v", str)
+			log.Fatalf("could not parse line #%d: %v", count, str)
 		}
 		clips = append(clips, clip)
+		count++
 	}
 	return clips
 }
