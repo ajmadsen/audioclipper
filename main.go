@@ -95,7 +95,7 @@ func parseClipFile(fname string) []*clip {
 			log.Fatalf("could not read line: %v", err)
 		}
 		str := string(l)
-		clip := parseClip(string(str))
+		clip := parseClip(str)
 		if clip == nil {
 			log.Fatalf("could not parse line: %v", str)
 		}
