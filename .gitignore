@@ -31,5 +31,6 @@ debug
 clips*/
 clips*.txt
 *.zip
+*.7z
 *.wav
 launch.json
