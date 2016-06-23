@@ -147,7 +147,7 @@ func convert(input string, c *clip) {
 		"-to", strconv.FormatFloat(c.End, 'f', -1, 64),
 		"-c:a", "libmp3lame",
 		"-q", "9",
-		"-v", "fatal",
+		"-v", "error",
 		output)
 	combOut, err := cmd.CombinedOutput()
 	if err != nil {
@@ -191,8 +191,9 @@ func main() {
 		fmt.Printf("usage: %v clipfile.txt input.wav\n", os.Args[0])
 		os.Exit(1)
 	}
-	unlinkIfExists("clips")
-	err := os.Mkdir("clips", 0755|os.ModeDir)
+	clipsDir := strings.TrimSuffix(os.Args[1], ".txt")
+	unlinkIfExists(clipsDir)
+	err := os.Mkdir(clipsDir, os.ModeDir)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -203,7 +204,7 @@ func main() {
 		go converter(cmds)
 	}
 	for _, clip := range clips {
-		clip.Name = filepath.Join("clips", sanitizeName(clip.Name))
+		clip.Name = filepath.Join(clipsDir, sanitizeName(clip.Name))
 		cmds <- &command{
 			os.Args[2],
 			clip,
